@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: .         # build from repo root (so Docker sees your root lockfile)
+      dockerfile: Dockerfile
+    env_file:
+      - ./.env           # your existing root .env
+    ports:
+      - "80:5000"        # visit http://localhost
+    restart: unless-stopped
