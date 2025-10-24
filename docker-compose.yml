@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   app:
     build:
@@ -8,24 +6,23 @@ services:
     env_file:
       - ./.env
     expose:
-      - "5000"
+      - "5000"             # internal only; Caddy will reverse-proxy to this
     restart: unless-stopped
 
   caddy:
     image: caddy:2
     container_name: caddy
+    depends_on:
+      - app
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy:/etc/caddy:ro   # commit this folder with Caddyfile inside
       - caddy_data:/data
       - caddy_config:/config
-    depends_on:
-      - app
     restart: unless-stopped
 
 volumes:
   caddy_data:
   caddy_config:
-
