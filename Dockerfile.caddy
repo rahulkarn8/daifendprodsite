@@ -1,4 +1,6 @@
 FROM caddy:2
+# copy from repo path caddy/Caddyfile into container's expected location
 COPY caddy/Caddyfile /etc/caddy/Caddyfile
+
 
 

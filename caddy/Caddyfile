@@ -7,25 +7,14 @@ www.daifend.ai {
 daifend.ai {
     encode zstd gzip
 
-    # --- allow ACME challenges ---
+    # allow ACME challenges, block dotfiles and .env
     @wellknown path /.well-known/*
-
-    # --- match any dotfile path (e.g., /.git, /.env, /.foo) ---
     @dotfiles path_regexp dotfiles (^|/)\.
-
-    # --- negate /.well-known/* so we don't block LE challenges ---
     @not_wellknown not path /.well-known/*
-
-    # --- explicitly match .env and variants anywhere in path ---
     @envfiles path_regexp envfiles (?i)/\.?env(\.|$)
-
-    # Block dotfiles except ACME paths
     respond @dotfiles @not_wellknown 404
-
-    # Block any .env access
     respond @envfiles 404
 
-    # App reverse proxy
     reverse_proxy app:5000
 
     header {
