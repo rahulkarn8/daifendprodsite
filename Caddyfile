@@ -1,0 +1,26 @@
+# Redirect www → root (HTTPS)
+www.daifend.ai {
+    redir https://daifend.ai{uri} 308
+}
+
+# Main site
+daifend.ai {
+    encode zstd gzip
+    reverse_proxy app:5000
+
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "no-referrer-when-downgrade"
+        X-Frame-Options "DENY"
+        X-XSS-Protection "1; mode=block"
+        Cache-Control "public, max-age=3600"
+    }
+
+    log {
+        output stdout
+        format single_field common_log
+    }
+}
+
+
