@@ -1,4 +1,4 @@
 FROM caddy:2
-# Put your Caddyfile in repo at caddy/Caddyfile
 COPY caddy/Caddyfile /etc/caddy/Caddyfile
+
 

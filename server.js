@@ -1,4 +1,3 @@
-// file: server.js
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -6,18 +5,29 @@ import { fileURLToPath } from 'url';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ESM replacement for __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve static files from Vite build output
-app.use(express.static(path.join(__dirname, 'dist/public')));
+// deny env/dotfiles (defense-in-depth)
+app.use((req, res, next) => {
+  const p = req.path;
+  if (p.startsWith('/.well-known/')) return next();
+  if (/^\/\.?env(\.|$)/i.test(p)) return res.sendStatus(404);
+  if (/^\/\./.test(p)) return res.sendStatus(404);
+  next();
+});
 
-// SPA fallback route (send index.html for all non-API routes)
+const publicDir = path.join(__dirname, 'dist', 'public');
+app.use(express.static(publicDir, { dotfiles: 'ignore', index: 'index.html', maxAge: '1h' }));
+
+// health endpoint for checks
+app.get('/healthz', (_req, res) => res.status(200).send('ok'));
+
+// SPA fallback
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/public', 'index.html'));
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
+  console.log(`[express] serving on port ${PORT}`);
 });

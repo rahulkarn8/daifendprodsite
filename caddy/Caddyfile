@@ -6,6 +6,16 @@ www.daifend.ai {
 # Main site
 daifend.ai {
     encode zstd gzip
+
+    # block dotfiles & .env (but allow ACME)
+    @wellknown path /.well-known/*
+    @dotfiles path_regexp dotfiles (^|/)\.
+    @envfiles path_regexp envfiles (?i)/\.?env(\.|$)
+    respond @dotfiles 404 {
+        not @wellknown
+    }
+    respond @envfiles 404
+
     reverse_proxy app:5000
 
     header {
@@ -19,6 +29,7 @@ daifend.ai {
 
     log {
         output stdout
-        format console   # built-in encoder (avoid custom plugin errors)
+        format console
     }
 }
+
