@@ -1,0 +1,5 @@
+# Dockerfile.caddy
+FROM caddy:2
+# copy your committed config into the image
+COPY caddy/Caddyfile /etc/caddy/Caddyfile
+

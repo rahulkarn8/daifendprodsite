@@ -5,6 +5,7 @@ www.daifend.ai {
 daifend.ai {
     encode zstd gzip
     reverse_proxy app:5000
+
     header {
         Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
         X-Content-Type-Options "nosniff"
@@ -13,6 +14,7 @@ daifend.ai {
         X-XSS-Protection "1; mode=block"
         Cache-Control "public, max-age=3600"
     }
+
     log {
         output stdout
         format single_field common_log

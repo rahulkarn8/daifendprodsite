@@ -6,11 +6,13 @@ services:
     env_file:
       - ./.env
     expose:
-      - "5000"             # internal only; Caddy will reverse-proxy to this
+      - "5000"
     restart: unless-stopped
 
   caddy:
-    image: caddy:2
+    build:
+      context: .
+      dockerfile: Dockerfile.caddy   # <— build a tiny image that includes Caddyfile
     container_name: caddy
     depends_on:
       - app
@@ -18,11 +20,11 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./caddy:/etc/caddy:ro   # commit this folder with Caddyfile inside
-      - caddy_data:/data
+      - caddy_data:/data            # cert storage
       - caddy_config:/config
     restart: unless-stopped
 
 volumes:
   caddy_data:
   caddy_config:
+
