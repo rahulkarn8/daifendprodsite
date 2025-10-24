@@ -3,25 +3,29 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    env_file:
-      - ./.env
-    expose:
-      - "5000"
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      # 🧩 Add your secrets here (Hostinger will inject these)
+      - DATABASE_URL='postgresql://neondb_owner:npg_HFWXvYV9ZmO0@ep-quiet-bonus-af100h96-pooler.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
+      - APP_URL=https://daifend.ai
     restart: unless-stopped
 
   caddy:
-    build:
-      context: .
-      dockerfile: Dockerfile.caddy
+    image: caddy:2
     container_name: caddy
-    depends_on:
-      - app
     ports:
       - "80:80"
       - "443:443"
     volumes:
+      # Make sure your local Caddyfile exists at project root
+      - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
+    depends_on:
+      - app
     restart: unless-stopped
 
 volumes:
