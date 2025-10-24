@@ -1,7 +1,9 @@
+# Redirect www → root
 www.daifend.ai {
     redir https://daifend.ai{uri} 308
 }
 
+# Main site
 daifend.ai {
     encode zstd gzip
     reverse_proxy app:5000
@@ -17,6 +19,6 @@ daifend.ai {
 
     log {
         output stdout
-        format single_field common_log
+        format console   # built-in encoder (avoid custom plugin errors)
     }
 }

@@ -12,7 +12,7 @@ services:
   caddy:
     build:
       context: .
-      dockerfile: Dockerfile.caddy   # <— build a tiny image that includes Caddyfile
+      dockerfile: Dockerfile.caddy   # Caddyfile baked into the image
     container_name: caddy
     depends_on:
       - app
@@ -20,11 +20,10 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - caddy_data:/data            # cert storage
+      - caddy_data:/data      # cert storage
       - caddy_config:/config
     restart: unless-stopped
 
 volumes:
   caddy_data:
   caddy_config:
-
