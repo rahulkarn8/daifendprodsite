@@ -148,7 +148,7 @@ export default function OfferingsTabs() {
   const activeOffering = offerings.find(o => o.id === activeTab) || offerings[0];
 
   return (
-    <section className="py-20 bg-card">
+    <section className="py-5 bg-card">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
