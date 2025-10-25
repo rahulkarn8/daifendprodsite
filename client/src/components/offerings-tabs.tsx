@@ -157,11 +157,6 @@ export default function OfferingsTabs() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-5xl font-bold mb-6">Securing the Future with Intelligent Cyber Defense</h2>
-          <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
-            Our suite of cutting-edge offerings is built to help enterprises navigate the evolving 
-            threat landscape using AI-native, proactive, and intelligent security systems.
-          </p>
         </motion.div>
 
         {/* Tab Buttons */}
