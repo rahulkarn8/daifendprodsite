@@ -1,6 +1,5 @@
 {
-    # Uses production ACME endpoint from compose env (or defaults to prod if unset)
-    acme_ca {env.CADDY_ACME_CA}
+    # Uses prod#acme_ca {env.CADDY_ACME_CA}
     email   {env.CADDY_ADMIN_EMAIL}
     # debug  # uncomment temporarily for verbose logs
 }
