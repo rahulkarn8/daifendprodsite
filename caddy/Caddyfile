@@ -1,11 +1,11 @@
 {
-    # Production ACME (env comes from compose; if omitted, prod is default anyway)
+    # Uses production ACME endpoint from compose env (or defaults to prod if unset)
     acme_ca {env.CADDY_ACME_CA}
-    email {env.CADDY_ADMIN_EMAIL}
-    # debug  # <- uncomment temporarily if you need verbose logs
+    email   {env.CADDY_ADMIN_EMAIL}
+    # debug  # uncomment temporarily for verbose logs
 }
 
-# www → apex redirect
+# Redirect www → apex
 www.daifend.ai {
     redir https://daifend.ai{uri} 308
 }
@@ -14,16 +14,18 @@ www.daifend.ai {
 daifend.ai {
     encode zstd gzip
 
-    # Security: block dotfiles & .env; allow ACME challenge path
-    @wellknown path /.well-known/*
-    @dotfiles path_regexp dotfiles (^|/)\.
-    @not_wellknown not path /.well-known/*
+    # --- Security hardening ---
+    @wellknown path /.well-known/*                 # keep ACME path open
+    @dotfiles path_regexp dotfiles (^|/)\.         # any leading dotfile
+    @not_wellknown not path /.well-known/*         # not /.well-known/*
     @envfiles path_regexp envfiles (?i)/\.?env(\.|$)
-    respond @dotfiles @not_wellknown 404
-    respond @envfiles 404
+    respond @dotfiles @not_wellknown 404           # deny dotfiles except ACME
+    respond @envfiles 404                          # deny .env variants
 
+    # App upstream (compose service name + port)
     reverse_proxy app:5000
 
+    # Secure headers
     header {
         Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
         X-Content-Type-Options "nosniff"
