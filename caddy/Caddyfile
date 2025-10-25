@@ -1,13 +1,20 @@
-# Redirect www → root
+{
+    # Production ACME (env comes from compose; if omitted, prod is default anyway)
+    acme_ca {env.CADDY_ACME_CA}
+    email {env.CADDY_ADMIN_EMAIL}
+    # debug  # <- uncomment temporarily if you need verbose logs
+}
+
+# www → apex redirect
 www.daifend.ai {
     redir https://daifend.ai{uri} 308
 }
 
-# Main site
+# Primary site
 daifend.ai {
     encode zstd gzip
 
-    # allow ACME challenges, block dotfiles and .env
+    # Security: block dotfiles & .env; allow ACME challenge path
     @wellknown path /.well-known/*
     @dotfiles path_regexp dotfiles (^|/)\.
     @not_wellknown not path /.well-known/*

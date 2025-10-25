@@ -6,21 +6,33 @@ services:
     environment:
       NODE_ENV: production
       PORT: "5000"
+      # 🔐 your runtime secrets (examples)
       DATABASE_URL: "postgresql://neondb_owner:npg_HFWXvYV9ZmO0@ep-quiet-bonus-af100h96-pooler.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+      # EMAIL_HOST: "smtp-relay.brevo.com"
+      # EMAIL_USER: "<brevo-user>"
+      # EMAIL_PASS: "<brevo-pass>"
     expose:
       - "5000"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   caddy:
-    build:
-      context: .
-      dockerfile: Dockerfile.caddy
+    image: caddy:2
     container_name: caddy
     ports:
       - "80:80"
       - "443:443"
+    # 👉 Production ACME endpoint (Let’s Encrypt). You can also omit this line; prod is default.
+    environment:
+      CADDY_ACME_CA: "https://acme-v02.api.letsencrypt.org/directory"
+      CADDY_ADMIN_EMAIL: "admin@daifend.ai"
     volumes:
-      - caddy_data:/data
+      - ./caddy:/etc/caddy:ro   # Caddyfile lives here (commit it)
+      - caddy_data:/data        # ✅ persist certs to avoid re-issuing
       - caddy_config:/config
     restart: unless-stopped
 
