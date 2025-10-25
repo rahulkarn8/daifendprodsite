@@ -31,9 +31,9 @@ services:
       CADDY_ACME_CA: "https://acme-v02.api.letsencrypt.org/directory"
       CADDY_ADMIN_EMAIL: "admin@daifend.ai"
     volumes:
-      - ./caddy:/etc/caddy:ro   # Caddyfile lives here (commit it)
-      - caddy_data:/data        # ✅ persist certs to avoid re-issuing
-      - caddy_config:/config
+       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+       - caddy_data:/data
+       - caddy_config:/config
     restart: unless-stopped
 
 volumes:
